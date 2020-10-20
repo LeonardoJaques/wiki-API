@@ -26,46 +26,65 @@ const articleSchema = {
 
 const Article = mongoose.model("Article", articleSchema);
 
-app.get("/articles", (req, res) => {
+/* Requests Targetting all Articles  */
+app.route("/articles")
+  .get((req, res) => {
+    Article.find({}, (err, foundArticles) => {
+      if (!err) {
+        res.send(foundArticles)
+      } else {
+        res.send(err)
+      }
+    });
+  })
 
-  Article.find({}, (err, foundArticles) => {
-    if (!err) {
-      res.send(foundArticles)
-    } else {
-      res.send(err)
-    }
+  .get((req, res) => {
 
+  })
+
+  .post((req, res) => {
+    const newArticle = new Article({
+      title: req.body.title,
+      content: req.body.content
+    });
+    newArticle.save((err) => {
+      if (!err) {
+        res.send("Successfully added a new article.");
+      } else {
+        res.send(err);
+      }
+    });
+  })
+
+  .delete((req, res) => {
+    Article.deleteMany((err) => {
+      if (!err) {
+        res.send("Successfully dele all articles");
+      } else {
+        res.send(err);
+      }
+    });
   });
 
-});
+/* End Requests Targetting A Specific Articles  */
 
-app.post("/articles", (req, res) => {
-
-  const newArticle = new Article({
-    title: req.body.title,
-    content: req.body.content
+app.route("/articles/:articleTitle")
+  .get((req, res) => {
+    Article.findOne({
+      title: req.params.articleTitle
+    }, (err, foundArticle) => {
+      if (foundArticle) {
+        res.send(foundArticle);
+      } else {
+        res.send("No articles matching is title was found.")
+      }
+    });
   });
 
-  newArticle.save((err) => {
-    if (!err) {
-      res.send("Successfully added a new article.");
-    } else {
-      res.send(err);
-    }
-  });
 
 
-});
 
-app.delete("/articles", (req, res) => {
-  Article.deleteMany((err) => {
-    if (!err) {
-      res.send("Successfully dele all articles");
-    } else {
-      res.send(err);
-    }
-  });
-});
+
 
 const port = process.env.PORT || 3000
 app.listen(port, (req, res) => {
