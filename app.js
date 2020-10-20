@@ -5,8 +5,16 @@ const ejs = require('ejs');
 
 const app = express();
 
+app.set("view engine", "ejs");
 
-mongoose.connect('mongodb://localhost:27017/wikiDB', {
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+
+app.use(express.static("public"));
+
+mongoose.connect('mongodb://localhost:27017/WikiDB', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -18,20 +26,35 @@ const articleSchema = {
 
 const Article = mongoose.model("Article", articleSchema);
 
+app.get("/articles", (req, res) => {
 
-app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+  Article.find({}, (err, foundArticles) => {
+    if (!err) {
+      res.send(foundArticles)
+    } else {
+      res.send(err)
+    }
 
-app.use(express.static("public"));
+  });
 
-app.get("/", (req, res) => {
-  res.render("its work, get!");
 });
 
-app.post("/", (req, res) => {
-  console.log("its work! post");
+app.post("/articles", (req, res) => {
+
+  const newArticle = new Article({
+    title: req.body.title,
+    content: req.body.content
+  });
+
+  newArticle.save((err) => {
+    if (!err) {
+      res.send("Successfully added a new article.");
+    } else {
+      res.send(err);
+    }
+  });
+
+
 });
 
 
