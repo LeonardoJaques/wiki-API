@@ -76,7 +76,7 @@ app.route("/articles/:articleTitle")
       if (foundArticle) {
         res.send(foundArticle);
       } else {
-        res.send("No articles matching is title was found.")
+        res.send("No articles matching is title was found.");
       }
     });
   })
@@ -90,27 +90,35 @@ app.route("/articles/:articleTitle")
       overwrite: true
     }, (err) => {
       if (!err) {
-        res.send("Successfully updated article.")
+        res.send("Successfully updated article.");
       }
     });
   })
   .patch((req, res) => {
-
     Article.update({
       title: req.params.articleTitle
     }, {
       $set: req.body
     }, (err) => {
       if (!err) {
-        res.send("Successfully update Article")
+        res.send("Successfully update Article");
       } else {
-        res.send("Successfully update Article")
+        res.send("Successfully update Article");
+      }
+    });
+  })
+  .delete((req, res) => {
+
+    Article.deleteOne({
+      title: req.params.articleTitle
+    }, (err) => {
+      if (!err) {
+        res.send("Successfully Delete Article");
+      } else {
+        res.send(err);
       }
     });
   });
-
-
-
 
 
 const port = process.env.PORT || 3000
