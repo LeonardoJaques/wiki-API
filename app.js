@@ -79,11 +79,21 @@ app.route("/articles/:articleTitle")
         res.send("No articles matching is title was found.")
       }
     });
-  });
-
-
-
-
+  })
+  .put((req, res) => {
+    Article.update({
+      title: req.params.articleTitle
+    }, {
+      title: req.body.title,
+      content: req.body.content
+    }, {
+      overwrite: true
+    }, (err) => {
+      if (!err) {
+        res.send("Successfully updated article.")
+      }
+    });
+  })
 
 
 const port = process.env.PORT || 3000
