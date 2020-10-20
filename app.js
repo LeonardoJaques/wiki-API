@@ -94,6 +94,23 @@ app.route("/articles/:articleTitle")
       }
     });
   })
+  .patch((req, res) => {
+
+    Article.update({
+      title: req.params.articleTitle
+    }, {
+      $set: req.body
+    }, (err) => {
+      if (!err) {
+        res.send("Successfully update Article")
+      } else {
+        res.send("Successfully update Article")
+      }
+    });
+  });
+
+
+
 
 
 const port = process.env.PORT || 3000
